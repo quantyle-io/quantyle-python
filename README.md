@@ -11,7 +11,11 @@ Quantyle.io is a algorithmic trading strategy development, backtesting, and live
 3. Activate your virtual environment `source virtualenv/bin/activate`
 4. Install system requirements from requirements.txt file `pip install -r requirements.txt`
 5. Get API key from `https://quantyle.io/settings` in the API tab
-6. Edit `auth_keys.json` in the main directory to include your API key
+6. make a file `auth_keys.json` in the same directory as your scripts containing:
+
+{
+    "Auth_token": "your-auth-token"
+}
 
 ## API features
 

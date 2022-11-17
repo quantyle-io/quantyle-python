@@ -2,13 +2,13 @@ from datetime import datetime as dt
 import client as QuantyleClient
 import time
 
-# Example of running a backtest with the quantyle-client api
+# Example of conducting a parameter with the quantyle-client api
 # 1. define a strategy
-# 2. define the backtest (broker, date ranges)
-# 3. run the backtest
-# 4. wait for the backtest to finish
-# 5. analyze the results
-
+# 2. define the parameter scan
+# 3. define market scenario (broker, date ranges)
+# 4. run the parameter scan
+# 5. wait for the parameter scan to finish
+# 6. analyze the results
 
 '''
 1. Define a strategy
@@ -33,9 +33,17 @@ sell_trigger = 'fast_ema < slow_ema'
 # Set strategy class
 my_strategy = QuantyleClient.strategy(strategy_signals, buy_trigger, sell_trigger, strategy_name="my_macd")
 
+'''
+2. Define a parameter scan
+'''
+
+parameter_scan = {
+    "fast_period": {"signal_name":"fast_ema", "parameter":"period", "values":[10, 20, 30]},
+    "slow_period": {"signal_name":"slow_ema", "parameter":"period", "values":[50, 100, 150]},
+    }
 
 '''
-2. define the backtest (broker, date ranges)
+3. define the market scenario (broker, date ranges)
 '''
 # Declare the broker conditions for the backtesting
 my_broker = QuantyleClient.broker(exchange_id="GDAX", product_id="BTC-USD", starting_cash=10000, taker_fee=0.004, maker_fee=0.006, trade_size=1)
@@ -45,32 +53,25 @@ start_date = str(dt(year=2022, month=9, day=1, hour=8, minute=1).isoformat())
 end_date = str(dt(year=2022, month=9, day=10, hour=8, minute=1).isoformat())
 
 # Pass Strategy, Broker, and Dates to QuantyleClient.backtestClient
-my_backtest = QuantyleClient.backtestClient(broker=my_broker, start_date=start_date, end_date=end_date, strategy=my_strategy)
+my_parameter_scan = QuantyleClient.ParameterScanClient(my_strategy, parameter_scan, my_broker, start_date, end_date)
+
+'''
+4. run the parameter scan
+'''
+# makes the API call to run the parameter scan process
+my_parameter_scan.start()
 
 
 '''
-3. run the backtest
+5. wait for the parameter scan to finish
 '''
-# makes the API call to run the backtest process
-my_backtest.start()
-
-
-'''
-4. wait for the backtest to finish
-'''
-# This is a distinct step because a user may want to make multiple API calls concurrently
-# In this case the user needs to have logic in place to handle each call, waiting for each distinct response
-# This is the easiest handling, making one api call, and waiting for it to complete
-response = my_backtest.get_progress()
-while not response["state"] == "COMPLETE":
+response = my_parameter_scan.get_progress()
+while not response["state"] == "PARAMETER_SCAN_FINISHED":
     time.sleep(1)
-    response = my_backtest.get_progress(verbose=True) # use verbose toggle to print out progress information to terminal
-
+    response = my_parameter_scan.get_progress(verbose=True) # use verbose toggle to print out progress information to terminal
 
 '''
-5. analyze the results
+6. analyze the results
 '''
-# Completed backtest, response now has the backtest performance metrics 
-# print(response)
-results = response["details"]["result"]
+results = response["details"]["results"]
 print(results)
