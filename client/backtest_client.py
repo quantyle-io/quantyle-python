@@ -40,17 +40,12 @@ class backtestClient():
                 "sell_trigger": self.sell_trigger,
             })}
         
-        print(params)
-
         response = requests.get(
             url=self.host,
             headers={"Authorization": "Token " + self.auth_token},
             params=params,
         ).json()
 
-        print("hello")
-        # print(response)
-        # self.task_id = response['task_id']
         self.task_id = response
 
         # response = self.session.request(

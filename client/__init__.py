@@ -1,5 +1,6 @@
 from .broker import *
 from .strategy import *
+from .signals import *
 from .quantyle_client import *
 from .alternate_client import *
 # from .client_strategy import *
