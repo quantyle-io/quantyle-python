@@ -6,3 +6,4 @@ from .alternate_client import *
 # from .client_strategy import *
 from .backtest_client import *
 from .parameter_scan_client import *
+from .backtest_analysis import *

@@ -1,7 +1,13 @@
 import requests
 import json
 import sys
+import matplotlib.pyplot as plt
+from functools import reduce  # forward compatibility for Python 3
+import operator
 
+def getFromDict(dataDict, mapList):
+    # access data in a nested dictionary via a list of keys
+    return reduce(operator.getitem, mapList, dataDict)
 
 class ParameterScanClient():
     # Client Class for interfacing with the Parameter Scan API call
@@ -87,5 +93,21 @@ class ParameterScanClient():
                 sys.stdout.write(str(response["details"]) + '             \r')
             elif response["state"] == "PARAMETER_SCAN_FINISHED":
                 print(" -------- Finished Parameter Scan -------- ")
+                self.results = response["details"]["results"]
 
         return response
+    
+    def oneD_analysis(self, parameter, metric, color='C0'):
+        # plot parameter vs metric
+        # note: expects metric to be a list of keys cooresponding to the location in the performance_metrics dictionary
+
+        # assumes parameter and metric are of type float
+        parameter_values = [result["parameters"][parameter] for result in self.results]
+        metric_values = [getFromDict(result["performance_metrics"], metric) for result in self.results]
+        
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.set_xlabel(parameter)
+        ax.set_ylabel(metric)
+        ax.scatter(parameter_values, metric_values, color=color)
+
+

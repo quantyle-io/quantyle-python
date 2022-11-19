@@ -1,6 +1,7 @@
 from datetime import datetime as dt
 import client as QuantyleClient
 import time
+import matplotlib.pyplot as plt
 
 # Example of conducting a parameter with the quantyle-client api
 # 1. define a strategy
@@ -50,7 +51,7 @@ my_broker = QuantyleClient.broker(exchange_id="GDAX", product_id="BTC-USD", star
 
 # Declare backtest date range in isoformat
 start_date = str(dt(year=2022, month=9, day=1, hour=8, minute=1).isoformat())
-end_date = str(dt(year=2022, month=9, day=10, hour=8, minute=1).isoformat())
+end_date = str(dt(year=2022, month=9, day=5, hour=8, minute=1).isoformat())
 
 # Pass Strategy, Broker, and Dates to QuantyleClient.backtestClient
 my_parameter_scan = QuantyleClient.ParameterScanClient(my_strategy, parameter_scan, my_broker, start_date, end_date)
@@ -73,5 +74,10 @@ while not response["state"] == "PARAMETER_SCAN_FINISHED":
 '''
 6. analyze the results
 '''
-results = response["details"]["results"]
-print(results)
+# results = response["details"]["results"]
+# print(results)
+my_parameter_scan.oneD_analysis(parameter="fast_period", metric=["return_on_investment"],color='C0')
+my_parameter_scan.oneD_analysis(parameter="slow_period", metric=["return_on_investment"],color='C1')
+my_parameter_scan.oneD_analysis(parameter="fast_period", metric=["trade_profit_distribution","mean"],color='C0')
+my_parameter_scan.oneD_analysis(parameter="slow_period", metric=["trade_profit_distribution","mean"],color='C1')
+plt.show()

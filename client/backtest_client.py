@@ -41,6 +41,7 @@ class backtestClient():
                 "signals": self.signals,
                 "buy_trigger": self.buy_trigger,
                 "sell_trigger": self.sell_trigger,
+                "plot_frontend": False
             })}
         
         response = requests.get(

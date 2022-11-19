@@ -1,6 +1,7 @@
 from datetime import datetime as dt
 import client as QuantyleClient
 import time
+import matplotlib.pyplot as plt
 
 # Example of running a backtest with the quantyle-client api
 # 1. define a strategy
@@ -71,6 +72,11 @@ while not response["state"] == "COMPLETE":
 5. analyze the results
 '''
 # Completed backtest, response now has the backtest performance metrics 
-# print(response)
-results = response["details"]["result"]
-print(results)
+# results = response["details"]["performance"]
+# print(results)
+
+my_analysis = QuantyleClient.BacktestAnalysis(response["details"]["performance"])
+my_analysis.plot_trade_profit_distribution()
+my_analysis.plot_trade_length_distribution()
+my_analysis.plot_trade_length_vs_profit()
+plt.show()
