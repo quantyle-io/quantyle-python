@@ -68,6 +68,7 @@ while not response["state"] == "FINISHED_BASELINE_BACKTEST":
 # results = response["details"]["performance"]
 # print(results)
 
-my_baseline_backtest.plot_baseline_backtest(["return_on_investment"], color='C0')
+my_baseline_backtest.plot_baseline_backtest(metric=["return_on_investment"], color='C0')
+my_baseline_backtest.plot_baseline_backtest(metric=["trade_profit_distribution","mean"], color='C1')
 plt.show()
 
