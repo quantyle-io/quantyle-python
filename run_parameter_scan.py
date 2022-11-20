@@ -80,4 +80,5 @@ my_parameter_scan.oneD_analysis(parameter="fast_period", metric=["return_on_inve
 my_parameter_scan.oneD_analysis(parameter="slow_period", metric=["return_on_investment"],color='C1')
 my_parameter_scan.oneD_analysis(parameter="fast_period", metric=["trade_profit_distribution","mean"],color='C0')
 my_parameter_scan.oneD_analysis(parameter="slow_period", metric=["trade_profit_distribution","mean"],color='C1')
+my_parameter_scan.twoD_analysis(parameter1="fast_period", parameter2="slow_period", metric=["return_on_investment"], cmap='Reds')
 plt.show()

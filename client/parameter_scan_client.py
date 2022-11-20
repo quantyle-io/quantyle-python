@@ -2,6 +2,8 @@ import requests
 import json
 import sys
 import matplotlib.pyplot as plt
+import matplotlib.cm as cmx
+import matplotlib.colors as colors
 from functools import reduce  # forward compatibility for Python 3
 import operator
 
@@ -109,5 +111,26 @@ class ParameterScanClient():
         ax.set_xlabel(parameter)
         ax.set_ylabel(metric)
         ax.scatter(parameter_values, metric_values, color=color)
+    
+    def twoD_analysis(self, parameter1, parameter2, metric, cmap='RdYlGn'):
+        # plot parameter1 vs parameter2 vs metric
+        # note: expects metric to be a list of keys cooresponding to the location in the performance_metrics dictionary
+
+        # assumes parameters and metrics are of type float
+        parameter1_values = [result["parameters"][parameter1] for result in self.results]
+        parameter2_values = [result["parameters"][parameter2] for result in self.results]
+        metric_values = [getFromDict(result["performance_metrics"], metric) for result in self.results]
+        
+        fig = plt.figure(figsize=(8, 6))
+        ax = fig.add_subplot(projection='3d')
+
+        cm = plt.get_cmap(cmap)
+        cNorm = colors.Normalize(vmin=min(metric_values), vmax=max(metric_values))
+        scalarMap = cmx.ScalarMappable(norm=cNorm, cmap=cm)
+
+        ax.set_xlabel(parameter1)
+        ax.set_ylabel(parameter2)
+        ax.set_zlabel(metric)
+        ax.scatter(parameter1_values, parameter2_values, metric_values, color=scalarMap.to_rgba(metric_values))
 
 
