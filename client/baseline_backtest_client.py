@@ -111,6 +111,27 @@ class BaselineBacktestClient():
                 marker_counter += 1
                 ax1.scatter([], [], marker=marker, color='black', label=asset)
                 ax2.scatter([], [], marker=marker, color='black', label=asset)
+            
+            # special plotting scenario
+            if metric[0] == "return_on_investment":
+                
+                for ax in [ax1, ax2]:
+                    ax.plot([-100, 100], [100, -100], color='black', linestyle="--", alpha=0.5, label="breakeven line")
+                    ax.plot([], [], color='green', linestyle="--", alpha=0.5, label="hold bull market")
+                    ax.plot([], [], color='red', linestyle="--", alpha=0.5, label="hold bear market")
+                
+                # add buy and hold lines to graph
+                for asset in self.response["details"]["baseline_backtests_info"]["assets"]:
+                    bear_result = [x["performance_metrics"] for x in self.response["details"]["results"] if (x["asset"] == asset and x["market_cond"] == "bear")][0]
+                    bull_result = [x["performance_metrics"] for x in self.response["details"]["results"] if (x["asset"] == asset and x["market_cond"] == "bull")][0]
+
+                    bear_hold = bear_result["buy_and_hold_percent"]
+                    ax1.plot([-100, 0, 100], [bear_hold, bear_hold, bear_hold], color='red', linestyle="--", marker=marker, alpha=0.5, label=None)
+                    ax2.plot([-100, 0, 100], [bear_hold, bear_hold, bear_hold], color='red', linestyle="--", marker=marker, alpha=0.5, label=None)
+
+                    bull_hold = bull_result["buy_and_hold_percent"]
+                    ax1.plot([bull_hold, bull_hold, bull_hold], [-100, 0, 100], color='green', linestyle="--", marker=marker, alpha=0.5, label=None)
+                    ax2.plot([bull_hold, bull_hold, bull_hold], [-100, 0, 100], color='green', linestyle="--", marker=marker, alpha=0.5, label=None)
 
         marker_counter = 0
         for asset in self.response["details"]["baseline_backtests_info"]["assets"]:
